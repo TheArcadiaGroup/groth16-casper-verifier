@@ -20,5 +20,5 @@ fn groth16_verify() {
 
     // final exponentiation
     println!("running final exponentiation");
-    contract.final_exponentiation(qap, vec![contract.ali, contract.bob, contract.joe]);
+    contract.final_exponentiation(qap);
 }

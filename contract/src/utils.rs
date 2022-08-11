@@ -16,16 +16,11 @@ use types::{
 
 pub const BN254_DATA_LEN: usize = 384;
 
-pub fn get_account_data(
-    key: Key,
-    suffix: String,
-    j: usize,
-) -> QuadExtField<Fp12ParamsWrapper<Fq12Parameters>> {
+pub fn get_account_data(key: String, j: usize) -> QuadExtField<Fp12ParamsWrapper<Fq12Parameters>> {
     let f = match j {
         0 => Fp12::<Fq12Parameters>::one(),
         _ => {
-            let src: Vec<u8> = get("data", &[key_to_str(&key), suffix].join("_"))
-                .unwrap_or([0u8; BN254_DATA_LEN].to_vec());
+            let src: Vec<u8> = get("data", &key).unwrap_or([0u8; BN254_DATA_LEN].to_vec());
             let src = array_ref![src, 0, BN254_DATA_LEN];
             Fp12::<Fq12Parameters>::read(&mut src.as_ref()).unwrap()
         }
@@ -33,17 +28,12 @@ pub fn get_account_data(
     f
 }
 
-pub fn put_account_data(
-    key: Key,
-    suffix: String,
-    f: &QuadExtField<Fp12ParamsWrapper<Fq12Parameters>>,
-) {
-    let data_key = [key_to_str(&key), suffix.clone()].join("_");
-    let mut dst: Vec<u8> = get("data", &data_key).unwrap_or([0u8; BN254_DATA_LEN].to_vec());
+pub fn put_account_data(key: String, f: &QuadExtField<Fp12ParamsWrapper<Fq12Parameters>>) {
+    let mut dst: Vec<u8> = get("data", &key).unwrap_or([0u8; BN254_DATA_LEN].to_vec());
     let dst = array_mut_ref![dst, 0, BN254_DATA_LEN];
     dst.copy_from_slice(to_bytes!(f).unwrap().as_slice());
 
-    set("data", &data_key, dst.to_vec());
+    set("data", &key, dst.to_vec());
 }
 
 fn get<T: CasperFromBytes + CLTyped + Default>(dictionary_name: &str, key: &str) -> Option<T> {

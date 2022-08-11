@@ -27,6 +27,7 @@ pub mod miller_loop;
 pub mod pvk;
 pub mod utils;
 
+use crate::final_exponentiation::final_exponentiation_handler;
 use crate::miller_loop::{delta_miller_loop_handler, gamma_miller_loop_handler};
 use error::Error;
 
@@ -36,7 +37,7 @@ pub extern "C" fn gamma_miller_loop() {
     let j: u8 = runtime::get_named_arg("j");
     let input: Vec<u8> = runtime::get_named_arg("input");
 
-    gamma_miller_loop_handler(i as usize, j as usize, input.as_slice(), get_caller());
+    gamma_miller_loop_handler(i as usize, j as usize, input.as_slice());
 }
 
 #[no_mangle]
@@ -45,7 +46,7 @@ pub extern "C" fn delta_miller_loop() {
     let j: u8 = runtime::get_named_arg("j");
     let input: Vec<u8> = runtime::get_named_arg("input");
 
-    delta_miller_loop_handler(i as usize, j as usize, input.as_slice(), get_caller());
+    delta_miller_loop_handler(i as usize, j as usize, input.as_slice());
 }
 
 #[no_mangle]
@@ -53,9 +54,9 @@ pub extern "C" fn final_exponentiation() {
     let i: u8 = runtime::get_named_arg("i");
     let j: u8 = runtime::get_named_arg("j");
     let input: Vec<u8> = runtime::get_named_arg("input");
-    let keys: Vec<Key> = runtime::get_named_arg("keys");
+    let keys: Vec<String> = runtime::get_named_arg("keys");
 
-    // gamma_miller_loop_handler(i as usize, j as usize, input.as_slice(), get_caller());
+    final_exponentiation_handler(i as usize, j as usize, input.as_slice(), keys.as_slice());
 }
 
 #[no_mangle]

@@ -272,17 +272,14 @@ impl Verifier {
         self._delta_miller_loop(0, j, proof_c, Sender(key));
     }
 
-    pub fn final_exponentiation(&mut self, qap: Vec<u8>, keys: Vec<AccountHash>) {
-        let gamma_key = keys[0];
-        let delta_key = keys[1];
-        let final_key = keys[2];
+    pub fn final_exponentiation(&mut self, qap: Vec<u8>) {
+        let gamma_key = "gamma".to_string();
+        let delta_key = "delta".to_string();
+        let final_key = "final".to_string();
         // first, create account for y0..y16
         let mut final_keys = vec![];
         for i in 0..17 {
-            final_keys.push(
-                PublicKey::from(&SecretKey::ed25519_from_bytes([10 + i; 32]).unwrap())
-                    .to_account_hash(),
-            );
+            final_keys.push(["y".to_string(), i.to_string()].join(""));
         }
 
         // prepare_final_data
@@ -290,31 +287,15 @@ impl Verifier {
             0,
             0,
             qap,
-            vec![
-                Key::Account(gamma_key),
-                Key::Account(delta_key),
-                Key::Account(final_key),
-            ],
+            vec![gamma_key, delta_key, final_key.clone()],
             Sender(self.joe),
         );
 
         // easy_part1
-        self._final_exponentiation(
-            0,
-            0,
-            vec![],
-            vec![Key::Account(final_key)],
-            Sender(self.joe),
-        );
+        self._final_exponentiation(0, 0, vec![], vec![final_key.clone()], Sender(self.joe));
 
         // easy_part2
-        self._final_exponentiation(
-            0,
-            0,
-            vec![],
-            vec![Key::Account(final_key)],
-            Sender(self.joe),
-        );
+        self._final_exponentiation(0, 0, vec![], vec![final_key.clone()], Sender(self.joe));
 
         // hard_part_y0
         for i in 0..63 {
@@ -322,7 +303,7 @@ impl Verifier {
                 0,
                 i,
                 vec![],
-                vec![Key::Account(final_key), Key::Account(final_keys[0])],
+                vec![final_key.clone(), final_keys[0].clone()],
                 Sender(self.joe),
             );
         }
@@ -332,7 +313,7 @@ impl Verifier {
             0,
             64,
             vec![],
-            vec![Key::Account(final_keys[0]), Key::Account(final_keys[1])],
+            vec![final_keys[0].clone(), final_keys[1].clone()],
             Sender(self.joe),
         );
 
@@ -341,7 +322,7 @@ impl Verifier {
             0,
             0,
             vec![],
-            vec![Key::Account(final_keys[0]), Key::Account(final_keys[3])],
+            vec![final_keys[0].clone(), final_keys[3].clone()],
             Sender(self.joe),
         );
 
@@ -351,7 +332,7 @@ impl Verifier {
                 0,
                 i,
                 vec![],
-                vec![Key::Account(final_keys[3]), Key::Account(final_keys[4])],
+                vec![final_keys[3].clone(), final_keys[4].clone()],
                 Sender(self.joe),
             );
         }
@@ -362,7 +343,7 @@ impl Verifier {
                 0,
                 i,
                 vec![],
-                vec![Key::Account(final_keys[4]), Key::Account(final_keys[6])],
+                vec![final_keys[4].clone(), final_keys[6].clone()],
                 Sender(self.joe),
             );
         }
@@ -373,10 +354,10 @@ impl Verifier {
             0,
             vec![],
             vec![
-                Key::Account(final_keys[3]),
-                Key::Account(final_keys[4]),
-                Key::Account(final_keys[6]),
-                Key::Account(final_keys[8]),
+                final_keys[3].clone(),
+                final_keys[4].clone(),
+                final_keys[6].clone(),
+                final_keys[8].clone(),
             ],
             Sender(self.joe),
         );
@@ -387,9 +368,9 @@ impl Verifier {
             0,
             vec![],
             vec![
-                Key::Account(final_keys[1]),
-                Key::Account(final_keys[8]),
-                Key::Account(final_keys[9]),
+                final_keys[1].clone(),
+                final_keys[8].clone(),
+                final_keys[9].clone(),
             ],
             Sender(self.joe),
         );
@@ -400,10 +381,10 @@ impl Verifier {
             0,
             vec![],
             vec![
-                Key::Account(final_keys[4]),
-                Key::Account(final_keys[8]),
-                Key::Account(final_key),
-                Key::Account(final_keys[11]),
+                final_keys[4].clone(),
+                final_keys[8].clone(),
+                final_key.clone(),
+                final_keys[11].clone(),
             ],
             Sender(self.joe),
         );
@@ -414,9 +395,9 @@ impl Verifier {
             0,
             vec![],
             vec![
-                Key::Account(final_keys[9]),
-                Key::Account(final_keys[11]),
-                Key::Account(final_keys[13]),
+                final_keys[9].clone(),
+                final_keys[11].clone(),
+                final_keys[13].clone(),
             ],
             Sender(self.joe),
         );
@@ -427,9 +408,9 @@ impl Verifier {
             0,
             vec![],
             vec![
-                Key::Account(final_keys[8]),
-                Key::Account(final_keys[13]),
-                Key::Account(final_keys[14]),
+                final_keys[8].clone(),
+                final_keys[13].clone(),
+                final_keys[14].clone(),
             ],
             Sender(self.joe),
         );
@@ -440,9 +421,9 @@ impl Verifier {
             0,
             vec![],
             vec![
-                Key::Account(final_keys[9]),
-                Key::Account(final_key),
-                Key::Account(final_keys[15]),
+                final_keys[9].clone(),
+                final_key.clone(),
+                final_keys[15].clone(),
             ],
             Sender(self.joe),
         );
@@ -452,7 +433,7 @@ impl Verifier {
             0,
             0,
             vec![],
-            vec![Key::Account(final_keys[14]), Key::Account(final_keys[15])],
+            vec![final_keys[14].clone(), final_keys[15].clone()],
             Sender(self.joe),
         );
     }
@@ -487,7 +468,7 @@ impl Verifier {
         i: u8,
         j: u8,
         qap: Vec<u8>,
-        keys: Vec<Key>,
+        keys: Vec<String>,
         sender: Sender,
     ) {
         self.call(

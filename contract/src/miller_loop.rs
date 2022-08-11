@@ -9,17 +9,17 @@ use types::{CLTyped, CLValue, Key, URef};
 use crate::pvk::{get_delta_qef, get_gamma_qef};
 use crate::utils::{get_account_data, put_account_data};
 
-pub fn gamma_miller_loop_handler(i: usize, j: usize, input: &[u8], key: Key) {
+pub fn gamma_miller_loop_handler(i: usize, j: usize, input: &[u8]) {
     let prepared_input: G1Prepared<ark_bn254::Parameters> = G1Projective::read(&mut input.as_ref())
         .unwrap()
         .into_affine()
         .into();
-    let account_data = get_account_data(key, "gamma".to_string(), j);
+    let account_data = get_account_data("gamma".to_string(), j);
     let account_data = match j {
         89 => final_gamma_miller_loop(&prepared_input, account_data, j),
         _ => sub_gamma_miller_loop(&prepared_input, account_data, i, j),
     };
-    put_account_data(key, "gamma".to_string(), &account_data);
+    put_account_data("gamma".to_string(), &account_data);
 }
 
 pub fn gamma_onchain_ell(f: &mut Fp12<Fq12Parameters>, j: usize, p: &G1Affine) {
@@ -68,16 +68,16 @@ fn final_gamma_miller_loop(
     f
 }
 
-pub fn delta_miller_loop_handler(i: usize, j: usize, input: &[u8], key: Key) {
+pub fn delta_miller_loop_handler(i: usize, j: usize, input: &[u8]) {
     let proof_c = G1Affine::read(&mut input.as_ref())
         .map(|p| G1Prepared::<Parameters>::from(p))
         .unwrap();
-    let account_data = get_account_data(key, "delta".to_string(), j);
+    let account_data = get_account_data("delta".to_string(), j);
     let account_data = match j {
         89 => final_delta_miller_loop(&proof_c, account_data, j),
         _ => sub_delta_miller_loop(&proof_c, account_data, i, j),
     };
-    put_account_data(key, "delta".to_string(), &account_data);
+    put_account_data("delta".to_string(), &account_data);
 }
 
 fn delta_onchain_ell(f: &mut Fp12<Fq12Parameters>, j: usize, p: &G1Affine) {
