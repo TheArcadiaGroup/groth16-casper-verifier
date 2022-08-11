@@ -1,0 +1,29 @@
+use types::{CLType, EntryPoint, EntryPointAccess, EntryPointType, EntryPoints, Parameter};
+
+pub fn endpoint(name: &str, param: Vec<Parameter>, ret: CLType) -> EntryPoint {
+    EntryPoint::new(
+        String::from(name),
+        param,
+        ret,
+        EntryPointAccess::Public,
+        EntryPointType::Contract,
+    )
+}
+
+pub fn gamma_miller_loop() -> EntryPoint {
+    endpoint(
+        "gamma_miller_loop",
+        vec![
+            Parameter::new("i", CLType::U64),
+            Parameter::new("j", CLType::U64),
+            Parameter::new("input", CLType::List(Box::new(CLType::U8))),
+        ],
+        CLType::Unit,
+    )
+}
+
+pub fn default() -> EntryPoints {
+    let mut entry_points = EntryPoints::new();
+    entry_points.add_entry_point(gamma_miller_loop());
+    entry_points
+}
