@@ -5,14 +5,11 @@ build-contract:
 	cargo build --release -p contract --target wasm32-unknown-unknown
 	wasm-strip target/wasm32-unknown-unknown/release/contract.wasm
 
-test-only:
-	cargo test -p tests
+copy-wasm-file-to-client:
+	mkdir -p client/wasm
+	cp target/wasm32-unknown-unknown/release/*.wasm client/wasm
 
-copy-wasm-file-to-test:
-	mkdir -p tests/wasm
-	cp target/wasm32-unknown-unknown/release/*.wasm tests/wasm
-
-test: build-contract copy-wasm-file-to-test test-only
+build: build-contract copy-wasm-file-to-client
 
 clippy:
 	cargo clippy --all-targets --all -- -A clippy::ptr_arg
@@ -27,4 +24,4 @@ lint: clippy format
 	
 clean:
 	cargo clean
-	rm -rf tests/wasm/*.wasm
+	rm -rf client/wasm/*.wasm
