@@ -1,12 +1,6 @@
-use std::slice::Iter;
-
 use ark_bn254::Fq12Parameters;
 use ark_ff::{Field, Fp12, Fp12ParamsWrapper, FromBytes, QuadExtField};
 use arrayref::array_ref;
-use types::{
-    bytesrepr::{FromBytes as CasperFromBytes, ToBytes},
-    CLTyped, Key, URef,
-};
 
 use crate::pvk::get_alpha_g1_beta_g2;
 use crate::utils::{get_account_data, put_account_data, BN254_DATA_LEN};

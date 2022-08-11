@@ -11,7 +11,7 @@ use contract::{
 use num_traits::One;
 use types::{
     bytesrepr::{FromBytes as CasperFromBytes, ToBytes},
-    CLTyped, Key, URef,
+    CLTyped, URef,
 };
 
 pub const BN254_DATA_LEN: usize = 384;
@@ -56,9 +56,4 @@ fn get_dictionary_seed_uref(name: &str) -> URef {
             new_dict
         }
     }
-}
-
-fn key_to_str(key: &Key) -> String {
-    let preimage = key.to_bytes().unwrap_or_revert();
-    base64::encode(&preimage)
 }

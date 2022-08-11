@@ -1,10 +1,7 @@
-use std::slice::Iter;
-
 use ark_bn254::{Fq12Parameters, G1Affine, G1Projective, Parameters};
 use ark_ec::bn::{BnParameters, G1Prepared};
 use ark_ec::ProjectiveCurve;
 use ark_ff::{Field, Fp12, Fp12ParamsWrapper, FromBytes, QuadExtField};
-use types::{CLTyped, CLValue, Key, URef};
 
 use crate::pvk::{get_delta_qef, get_gamma_qef};
 use crate::utils::{get_account_data, put_account_data};
