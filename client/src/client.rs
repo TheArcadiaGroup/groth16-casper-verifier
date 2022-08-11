@@ -281,7 +281,7 @@ impl Client {
 
         // prepare_final_data
         self._final_exponentiation(
-            0,
+            2,
             0,
             qap,
             vec![gamma_key, delta_key, final_key.clone()],
@@ -289,15 +289,15 @@ impl Client {
         );
 
         // easy_part1
-        self._final_exponentiation(0, 0, vec![], vec![final_key.clone()], Sender(self.ali));
+        self._final_exponentiation(3, 0, vec![], vec![final_key.clone()], Sender(self.ali));
 
         // easy_part2
-        self._final_exponentiation(0, 0, vec![], vec![final_key.clone()], Sender(self.ali));
+        self._final_exponentiation(4, 0, vec![], vec![final_key.clone()], Sender(self.ali));
 
         // hard_part_y0
         for i in 0..63 {
             self._final_exponentiation(
-                0,
+                5,
                 i,
                 vec![],
                 vec![final_key.clone(), final_keys[0].clone()],
@@ -307,7 +307,7 @@ impl Client {
 
         // hard_part_y1
         self._final_exponentiation(
-            0,
+            6,
             64,
             vec![],
             vec![final_keys[0].clone(), final_keys[1].clone()],
@@ -316,7 +316,7 @@ impl Client {
 
         // hard_part_y3
         self._final_exponentiation(
-            0,
+            7,
             0,
             vec![],
             vec![final_keys[0].clone(), final_keys[3].clone()],
@@ -326,7 +326,7 @@ impl Client {
         // hard_part_y4
         for i in 0..63 {
             self._final_exponentiation(
-                0,
+                8,
                 i,
                 vec![],
                 vec![final_keys[3].clone(), final_keys[4].clone()],
@@ -337,7 +337,7 @@ impl Client {
         // hard_part_y6
         for i in 0..63 {
             self._final_exponentiation(
-                0,
+                9,
                 i,
                 vec![],
                 vec![final_keys[4].clone(), final_keys[6].clone()],
@@ -347,7 +347,7 @@ impl Client {
 
         // hard_part_y8
         self._final_exponentiation(
-            0,
+            10,
             0,
             vec![],
             vec![
@@ -361,7 +361,7 @@ impl Client {
 
         // hard_part_y9
         self._final_exponentiation(
-            0,
+            11,
             0,
             vec![],
             vec![
@@ -374,7 +374,7 @@ impl Client {
 
         // hard_part_y11
         self._final_exponentiation(
-            0,
+            12,
             0,
             vec![],
             vec![
@@ -388,7 +388,7 @@ impl Client {
 
         // hard_part_y13
         self._final_exponentiation(
-            0,
+            13,
             0,
             vec![],
             vec![
@@ -401,7 +401,7 @@ impl Client {
 
         // hard_part_y14
         self._final_exponentiation(
-            0,
+            14,
             0,
             vec![],
             vec![
@@ -414,7 +414,7 @@ impl Client {
 
         // hard_part_y15
         self._final_exponentiation(
-            0,
+            15,
             0,
             vec![],
             vec![
@@ -427,7 +427,7 @@ impl Client {
 
         // hard_part_y16
         self._final_exponentiation(
-            0,
+            16,
             0,
             vec![],
             vec![final_keys[14].clone(), final_keys[15].clone()],
