@@ -1,4 +1,5 @@
 use crate::utilities::get_current_time;
+use ark_ec::bn::BnParameters;
 use casper_engine_test_support::{
     DeployItemBuilder, ExecuteRequestBuilder, InMemoryWasmTestBuilder, ARG_AMOUNT,
     DEFAULT_ACCOUNT_INITIAL_BALANCE, DEFAULT_ACCOUNT_PUBLIC_KEY, DEFAULT_AUCTION_DELAY,
@@ -12,8 +13,10 @@ use casper_execution_engine::core::engine_state::{
     run_genesis_request::RunGenesisRequest,
 };
 use casper_types::{
-    account::AccountHash, bytesrepr::FromBytes, runtime_args, CLType, CLTyped, CLValue,
-    ContractHash, Key, Motes, PublicKey, RuntimeArgs, SecretKey,
+    account::AccountHash,
+    bytesrepr::{Bytes, FromBytes},
+    runtime_args, CLType, CLTyped, CLValue, ContractHash, Key, Motes, PublicKey, RuntimeArgs,
+    SecretKey,
 };
 use rand::Rng;
 use std::path::PathBuf;
@@ -238,16 +241,72 @@ impl Verifier {
         self.builder.exec(execute_request).commit().expect_success();
     }
 
-    pub fn gamma_miller_loop(&mut self, i: u64, j: u64, input: Vec<u8>, sender: Sender) {
+    pub fn gamma_miller_loop(&mut self, prepared_input: Vec<u8>, key: AccountHash) {
+        let mut j: u8 = 0;
+        for i in (1..ark_bn254::Parameters::ATE_LOOP_COUNT.len()).rev() {
+            self._gamma_miller_loop(i as u8, j, prepared_input.clone(), Sender(key));
+
+            j += 1;
+            if ark_bn254::Parameters::ATE_LOOP_COUNT[i - 1] == 1
+                || ark_bn254::Parameters::ATE_LOOP_COUNT[i - 1] == -1
+            {
+                j += 1;
+            }
+        }
+
+        self._gamma_miller_loop(0, j, prepared_input, Sender(key));
+    }
+
+    pub fn delta_miller_loop(&mut self, proof_c: Vec<u8>, key: AccountHash) {
+        let mut j: u8 = 0;
+        for i in (1..ark_bn254::Parameters::ATE_LOOP_COUNT.len()).rev() {
+            self._delta_miller_loop(i as u8, j, proof_c.clone(), Sender(key));
+
+            j += 1;
+            if ark_bn254::Parameters::ATE_LOOP_COUNT[i - 1] == 1
+                || ark_bn254::Parameters::ATE_LOOP_COUNT[i - 1] == -1
+            {
+                j += 1;
+            }
+        }
+
+        self._delta_miller_loop(0, j, proof_c, Sender(key));
+    }
+
+    pub fn final_exponentiation(&mut self, qap: Vec<u8>, keys: Vec<AccountHash>) {
         // let a: CLType::List(Box::new(CLType::U8)) = input;
 
+        // self.call(
+        //     sender,
+        //     "gamma_miller_loop",
+        //     runtime_args! {
+        //         "i" => i,
+        //         "j" => j,
+        //         "input" => Bytes::from(input)
+        //     },
+        // );
+    }
+
+    fn _gamma_miller_loop(&mut self, i: u8, j: u8, prepared_input: Vec<u8>, sender: Sender) {
         self.call(
             sender,
             "gamma_miller_loop",
             runtime_args! {
                 "i" => i,
                 "j" => j,
-                "input" => input
+                "input" => Bytes::from(prepared_input)
+            },
+        );
+    }
+
+    fn _delta_miller_loop(&mut self, i: u8, j: u8, proof_c: Vec<u8>, sender: Sender) {
+        self.call(
+            sender,
+            "delta_miller_loop",
+            runtime_args! {
+                "i" => i,
+                "j" => j,
+                "input" => Bytes::from(proof_c)
             },
         );
     }

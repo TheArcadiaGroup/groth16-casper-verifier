@@ -14,8 +14,20 @@ pub fn gamma_miller_loop() -> EntryPoint {
     endpoint(
         "gamma_miller_loop",
         vec![
-            Parameter::new("i", CLType::U64),
-            Parameter::new("j", CLType::U64),
+            Parameter::new("i", CLType::U8),
+            Parameter::new("j", CLType::U8),
+            Parameter::new("input", CLType::List(Box::new(CLType::U8))),
+        ],
+        CLType::Unit,
+    )
+}
+
+pub fn delta_miller_loop() -> EntryPoint {
+    endpoint(
+        "delta_miller_loop",
+        vec![
+            Parameter::new("i", CLType::U8),
+            Parameter::new("j", CLType::U8),
             Parameter::new("input", CLType::List(Box::new(CLType::U8))),
         ],
         CLType::Unit,
@@ -25,5 +37,6 @@ pub fn gamma_miller_loop() -> EntryPoint {
 pub fn default() -> EntryPoints {
     let mut entry_points = EntryPoints::new();
     entry_points.add_entry_point(gamma_miller_loop());
+    entry_points.add_entry_point(delta_miller_loop());
     entry_points
 }

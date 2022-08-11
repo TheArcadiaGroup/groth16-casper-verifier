@@ -26,8 +26,15 @@ use error::Error;
 
 #[no_mangle]
 pub extern "C" fn gamma_miller_loop() {
-    let i: u64 = runtime::get_named_arg("i");
-    let j: u64 = runtime::get_named_arg("j");
+    let i: u8 = runtime::get_named_arg("i");
+    let j: u8 = runtime::get_named_arg("j");
+    let input: Vec<u8> = runtime::get_named_arg("input");
+}
+
+#[no_mangle]
+pub extern "C" fn delta_miller_loop() {
+    let i: u8 = runtime::get_named_arg("i");
+    let j: u8 = runtime::get_named_arg("j");
     let input: Vec<u8> = runtime::get_named_arg("input");
 }
 
