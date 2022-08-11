@@ -41,7 +41,7 @@ pub fn final_exponentiation() -> EntryPoint {
             Parameter::new("i", CLType::U8),
             Parameter::new("j", CLType::U8),
             Parameter::new("input", CLType::List(Box::new(CLType::U8))),
-            Parameter::new("keys", CLType::List(Box::new(CLType::Key))),
+            Parameter::new("keys", CLType::List(Box::new(CLType::String))),
         ],
         CLType::Unit,
     )

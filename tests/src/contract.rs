@@ -288,14 +288,14 @@ impl Verifier {
             0,
             qap,
             vec![gamma_key, delta_key, final_key.clone()],
-            Sender(self.joe),
+            Sender(self.ali),
         );
 
         // easy_part1
-        self._final_exponentiation(0, 0, vec![], vec![final_key.clone()], Sender(self.joe));
+        self._final_exponentiation(0, 0, vec![], vec![final_key.clone()], Sender(self.ali));
 
         // easy_part2
-        self._final_exponentiation(0, 0, vec![], vec![final_key.clone()], Sender(self.joe));
+        self._final_exponentiation(0, 0, vec![], vec![final_key.clone()], Sender(self.ali));
 
         // hard_part_y0
         for i in 0..63 {
@@ -304,7 +304,7 @@ impl Verifier {
                 i,
                 vec![],
                 vec![final_key.clone(), final_keys[0].clone()],
-                Sender(self.joe),
+                Sender(self.ali),
             );
         }
 
@@ -314,7 +314,7 @@ impl Verifier {
             64,
             vec![],
             vec![final_keys[0].clone(), final_keys[1].clone()],
-            Sender(self.joe),
+            Sender(self.ali),
         );
 
         // hard_part_y3
@@ -323,7 +323,7 @@ impl Verifier {
             0,
             vec![],
             vec![final_keys[0].clone(), final_keys[3].clone()],
-            Sender(self.joe),
+            Sender(self.ali),
         );
 
         // hard_part_y4
@@ -333,7 +333,7 @@ impl Verifier {
                 i,
                 vec![],
                 vec![final_keys[3].clone(), final_keys[4].clone()],
-                Sender(self.joe),
+                Sender(self.ali),
             );
         }
 
@@ -344,7 +344,7 @@ impl Verifier {
                 i,
                 vec![],
                 vec![final_keys[4].clone(), final_keys[6].clone()],
-                Sender(self.joe),
+                Sender(self.ali),
             );
         }
 
@@ -359,7 +359,7 @@ impl Verifier {
                 final_keys[6].clone(),
                 final_keys[8].clone(),
             ],
-            Sender(self.joe),
+            Sender(self.ali),
         );
 
         // hard_part_y9
@@ -372,7 +372,7 @@ impl Verifier {
                 final_keys[8].clone(),
                 final_keys[9].clone(),
             ],
-            Sender(self.joe),
+            Sender(self.ali),
         );
 
         // hard_part_y11
@@ -386,7 +386,7 @@ impl Verifier {
                 final_key.clone(),
                 final_keys[11].clone(),
             ],
-            Sender(self.joe),
+            Sender(self.ali),
         );
 
         // hard_part_y13
@@ -399,7 +399,7 @@ impl Verifier {
                 final_keys[11].clone(),
                 final_keys[13].clone(),
             ],
-            Sender(self.joe),
+            Sender(self.ali),
         );
 
         // hard_part_y14
@@ -412,7 +412,7 @@ impl Verifier {
                 final_keys[13].clone(),
                 final_keys[14].clone(),
             ],
-            Sender(self.joe),
+            Sender(self.ali),
         );
 
         // hard_part_y15
@@ -425,7 +425,7 @@ impl Verifier {
                 final_key.clone(),
                 final_keys[15].clone(),
             ],
-            Sender(self.joe),
+            Sender(self.ali),
         );
 
         // hard_part_y16
@@ -434,7 +434,7 @@ impl Verifier {
             0,
             vec![],
             vec![final_keys[14].clone(), final_keys[15].clone()],
-            Sender(self.joe),
+            Sender(self.ali),
         );
     }
 
@@ -473,7 +473,7 @@ impl Verifier {
     ) {
         self.call(
             sender,
-            "delta_miller_loop",
+            "final_exponentiation",
             runtime_args! {
                 "i" => i,
                 "j" => j,
