@@ -1,14 +1,5 @@
-use blake2::{
-    digest::{Update, VariableOutput},
-    VarBlake2b,
-};
-use casper_types::{bytesrepr::ToBytes, ContractHash, ContractPackageHash, Key, U256};
-use core::time;
-use renvm_sig::keccak256;
-use std::{
-    thread,
-    time::{SystemTime, UNIX_EPOCH},
-};
+use casper_types::{bytesrepr::ToBytes, Key};
+use std::time::{SystemTime, UNIX_EPOCH};
 
 pub fn get_current_time() -> u64 {
     let start = SystemTime::now();

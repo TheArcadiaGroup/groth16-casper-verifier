@@ -12,6 +12,13 @@ contract = { package = "casper-contract", version="=1.4.3" }
 types = { package = "casper-types", version="=1.4.5" }
 hex = "0.4.3"
 base64 = { version = "0.13.0", default-features = false, features = ["alloc"] }
+ark-groth16 = { version = "0.3.0", default-features = false}
+ark-std = { version = "^0.3.0", features = ["std"]}
+ark-ff = { version = "^0.3.0", default-features = false}
+ark-ec = { version = "^0.3.0", default-features = false}
+ark-bn254 = { version = "0.3.0", features = ["curve"]}
+num-traits = "0.2.14"
+arrayref = "0.3.6"
 
 [[bin]]
 name = "contract"

@@ -1,11 +1,6 @@
-use casper_types::{account::AccountHash, Key};
 use circuit::initialize;
 
-use crate::contract::{Sender, Verifier};
-
-fn to_key(account: AccountHash) -> Key {
-    Key::Account(account)
-}
+use crate::contract::Verifier;
 
 #[test]
 fn groth16_verify() {
@@ -23,7 +18,7 @@ fn groth16_verify() {
     println!("running delta miller loop");
     contract.delta_miller_loop(proof_c, contract.bob);
 
-    // // final exponentiation
-    // println!("running final exponentiation");
-    // contract.final_exponentiation(qap, contract.ali);
+    // final exponentiation
+    println!("running final exponentiation");
+    contract.final_exponentiation(qap, vec![contract.ali, contract.bob, contract.joe]);
 }

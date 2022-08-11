@@ -22,6 +22,12 @@ use types::{
 };
 pub mod entry_points;
 pub mod error;
+pub mod final_exponentiation;
+pub mod miller_loop;
+pub mod pvk;
+pub mod utils;
+
+use crate::miller_loop::{delta_miller_loop_handler, gamma_miller_loop_handler};
 use error::Error;
 
 #[no_mangle]
@@ -29,6 +35,8 @@ pub extern "C" fn gamma_miller_loop() {
     let i: u8 = runtime::get_named_arg("i");
     let j: u8 = runtime::get_named_arg("j");
     let input: Vec<u8> = runtime::get_named_arg("input");
+
+    gamma_miller_loop_handler(i as usize, j as usize, input.as_slice(), get_caller());
 }
 
 #[no_mangle]
@@ -36,15 +44,31 @@ pub extern "C" fn delta_miller_loop() {
     let i: u8 = runtime::get_named_arg("i");
     let j: u8 = runtime::get_named_arg("j");
     let input: Vec<u8> = runtime::get_named_arg("input");
+
+    delta_miller_loop_handler(i as usize, j as usize, input.as_slice(), get_caller());
+}
+
+#[no_mangle]
+pub extern "C" fn final_exponentiation() {
+    let i: u8 = runtime::get_named_arg("i");
+    let j: u8 = runtime::get_named_arg("j");
+    let input: Vec<u8> = runtime::get_named_arg("input");
+    let keys: Vec<Key> = runtime::get_named_arg("keys");
+
+    // gamma_miller_loop_handler(i as usize, j as usize, input.as_slice(), get_caller());
 }
 
 #[no_mangle]
 pub extern "C" fn call() {
     let entry_points = entry_points::default();
 
+    let data_seed_uref = storage::new_dictionary("data").unwrap_or_revert();
+
     let mut named_keys = NamedKeys::new();
 
     let (contract_package_hash, access_uref) = create_contract_package_at_hash();
+    named_keys.insert("data".to_string(), data_seed_uref.into());
+
     named_keys.insert(
         "contract_package_hash".to_string(),
         storage::new_uref(contract_package_hash).into(),

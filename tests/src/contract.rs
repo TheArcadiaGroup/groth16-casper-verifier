@@ -15,8 +15,7 @@ use casper_execution_engine::core::engine_state::{
 use casper_types::{
     account::AccountHash,
     bytesrepr::{Bytes, FromBytes},
-    runtime_args, CLType, CLTyped, CLValue, ContractHash, Key, Motes, PublicKey, RuntimeArgs,
-    SecretKey,
+    runtime_args, CLTyped, ContractHash, Key, Motes, PublicKey, RuntimeArgs, SecretKey,
 };
 use rand::Rng;
 use std::path::PathBuf;
@@ -199,7 +198,7 @@ impl Verifier {
     }
 
     /// query a contract's named key.
-    fn query_contract<T: CLTyped + FromBytes>(&self, name: &str) -> Option<T> {
+    fn _query_contract<T: CLTyped + FromBytes>(&self, name: &str) -> Option<T> {
         match self.builder.query(
             None,
             Key::Account(self.ali),
@@ -274,20 +273,192 @@ impl Verifier {
     }
 
     pub fn final_exponentiation(&mut self, qap: Vec<u8>, keys: Vec<AccountHash>) {
-        // let a: CLType::List(Box::new(CLType::U8)) = input;
+        let gamma_key = keys[0];
+        let delta_key = keys[1];
+        let final_key = keys[2];
+        // first, create account for y0..y16
+        let mut final_keys = vec![];
+        for i in 0..17 {
+            final_keys.push(
+                PublicKey::from(&SecretKey::ed25519_from_bytes([10 + i; 32]).unwrap())
+                    .to_account_hash(),
+            );
+        }
 
-        // self.call(
-        //     sender,
-        //     "gamma_miller_loop",
-        //     runtime_args! {
-        //         "i" => i,
-        //         "j" => j,
-        //         "input" => Bytes::from(input)
-        //     },
-        // );
+        // prepare_final_data
+        self._final_exponentiation(
+            0,
+            0,
+            qap,
+            vec![
+                Key::Account(gamma_key),
+                Key::Account(delta_key),
+                Key::Account(final_key),
+            ],
+            Sender(self.joe),
+        );
+
+        // easy_part1
+        self._final_exponentiation(
+            0,
+            0,
+            vec![],
+            vec![Key::Account(final_key)],
+            Sender(self.joe),
+        );
+
+        // easy_part2
+        self._final_exponentiation(
+            0,
+            0,
+            vec![],
+            vec![Key::Account(final_key)],
+            Sender(self.joe),
+        );
+
+        // hard_part_y0
+        for i in 0..63 {
+            self._final_exponentiation(
+                0,
+                i,
+                vec![],
+                vec![Key::Account(final_key), Key::Account(final_keys[0])],
+                Sender(self.joe),
+            );
+        }
+
+        // hard_part_y1
+        self._final_exponentiation(
+            0,
+            64,
+            vec![],
+            vec![Key::Account(final_keys[0]), Key::Account(final_keys[1])],
+            Sender(self.joe),
+        );
+
+        // hard_part_y3
+        self._final_exponentiation(
+            0,
+            0,
+            vec![],
+            vec![Key::Account(final_keys[0]), Key::Account(final_keys[3])],
+            Sender(self.joe),
+        );
+
+        // hard_part_y4
+        for i in 0..63 {
+            self._final_exponentiation(
+                0,
+                i,
+                vec![],
+                vec![Key::Account(final_keys[3]), Key::Account(final_keys[4])],
+                Sender(self.joe),
+            );
+        }
+
+        // hard_part_y6
+        for i in 0..63 {
+            self._final_exponentiation(
+                0,
+                i,
+                vec![],
+                vec![Key::Account(final_keys[4]), Key::Account(final_keys[6])],
+                Sender(self.joe),
+            );
+        }
+
+        // hard_part_y8
+        self._final_exponentiation(
+            0,
+            0,
+            vec![],
+            vec![
+                Key::Account(final_keys[3]),
+                Key::Account(final_keys[4]),
+                Key::Account(final_keys[6]),
+                Key::Account(final_keys[8]),
+            ],
+            Sender(self.joe),
+        );
+
+        // hard_part_y9
+        self._final_exponentiation(
+            0,
+            0,
+            vec![],
+            vec![
+                Key::Account(final_keys[1]),
+                Key::Account(final_keys[8]),
+                Key::Account(final_keys[9]),
+            ],
+            Sender(self.joe),
+        );
+
+        // hard_part_y11
+        self._final_exponentiation(
+            0,
+            0,
+            vec![],
+            vec![
+                Key::Account(final_keys[4]),
+                Key::Account(final_keys[8]),
+                Key::Account(final_key),
+                Key::Account(final_keys[11]),
+            ],
+            Sender(self.joe),
+        );
+
+        // hard_part_y13
+        self._final_exponentiation(
+            0,
+            0,
+            vec![],
+            vec![
+                Key::Account(final_keys[9]),
+                Key::Account(final_keys[11]),
+                Key::Account(final_keys[13]),
+            ],
+            Sender(self.joe),
+        );
+
+        // hard_part_y14
+        self._final_exponentiation(
+            0,
+            0,
+            vec![],
+            vec![
+                Key::Account(final_keys[8]),
+                Key::Account(final_keys[13]),
+                Key::Account(final_keys[14]),
+            ],
+            Sender(self.joe),
+        );
+
+        // hard_part_y15
+        self._final_exponentiation(
+            0,
+            0,
+            vec![],
+            vec![
+                Key::Account(final_keys[9]),
+                Key::Account(final_key),
+                Key::Account(final_keys[15]),
+            ],
+            Sender(self.joe),
+        );
+
+        // hard_part_y16
+        self._final_exponentiation(
+            0,
+            0,
+            vec![],
+            vec![Key::Account(final_keys[14]), Key::Account(final_keys[15])],
+            Sender(self.joe),
+        );
     }
 
     fn _gamma_miller_loop(&mut self, i: u8, j: u8, prepared_input: Vec<u8>, sender: Sender) {
+        println!("{} {}", i, j);
         self.call(
             sender,
             "gamma_miller_loop",
@@ -307,6 +478,26 @@ impl Verifier {
                 "i" => i,
                 "j" => j,
                 "input" => Bytes::from(proof_c)
+            },
+        );
+    }
+
+    fn _final_exponentiation(
+        &mut self,
+        i: u8,
+        j: u8,
+        qap: Vec<u8>,
+        keys: Vec<Key>,
+        sender: Sender,
+    ) {
+        self.call(
+            sender,
+            "delta_miller_loop",
+            runtime_args! {
+                "i" => i,
+                "j" => j,
+                "input" => Bytes::from(qap),
+                "keys" => keys
             },
         );
     }
