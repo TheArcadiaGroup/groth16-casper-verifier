@@ -1,0 +1,29 @@
+[package]
+name = "client"
+version = "0.1.0"
+authors = ["The Arcadia Group"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+casper-contract = { version = "=1.4.3", default-features = false, features = ["test-support"] }
+casper-types = "=1.4.5"
+casper-engine-test-support = { version = "=2.0.3", features = ["test-support"] }
+casper-execution-engine = { version = "=1.4.3", features = ["test-support"] }
+getrandom = { version = "0.2", features = ["js"] }
+solid = "0.1.5"
+renvm-sig = "0.1.1"
+libsecp256k1 = "0.6.0"
+hex = "0.4.3"
+ed25519-dalek = "1.0.1"
+rand = "0.7"
+k256 = "0.7.2"
+base64 = { version = "0.13.0", default-features = false, features = ["alloc"] }
+base16 = { version = "0.2.1", default-features = false, features = ["alloc"] }
+ark-bn254 = { version = "0.3.0", features = ["curve"]}
+ark-ec = { version = "0.3.0", default-features = false}
+circuit = { version = "0.1.0", path = "../circuit"}
+
+[features]
+default = ["casper-contract/std", "casper-types/std", "casper-contract/test-support"]
